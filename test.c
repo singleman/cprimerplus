@@ -12,7 +12,8 @@ int main(int argc, char *argv[])
 	char dst[128],*pstr=argv[1];
 	for(i=0;*pstr;i++)
 		dst[i]=toupper(*pstr++);
-	dst[i]='\0';
-	printf("%s\n",dst);
+	dst[i]='\n';
+	printf("%s",dst);
 	return 0;
+
 } 
