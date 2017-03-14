@@ -11,6 +11,9 @@ struct book{
 int main(void)
 {
 	struct book library;
+	struct book *pst;
+	pst = &library;
+
 	printf("Please enter the book title.\n");
 	s_gets(library.title,MAXTITL);
 	//fgets(library.title,MAXTITL,stdin);
@@ -21,7 +24,7 @@ int main(void)
 	//scanf("%s",&library.author);//gets(library.author);
 	printf("Please enter the book value.\n");
 	scanf("%f",&library.value);
-	printf("%s by %s :$%.2f\n",library.title,library.author,library.value);
+	printf("%s by %s :$%.2f\n",library.title,pst->author,library.value);
 	return 0;
 }
 char *s_gets(char *st, int n)

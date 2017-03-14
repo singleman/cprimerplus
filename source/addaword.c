@@ -19,7 +19,7 @@ int main(void)
 	while(fgets(words,MAX,stdin)!=NULL && words[0]!='\n')
 		fprintf(fp,"%s\n",words);
 	puts("File contents:");
-	rewind(fp);
+	rewind(fp); 
 	while(fscanf(fp,"%s",words)==1)
 		//fputs(words,stdout);
 		puts(words);
