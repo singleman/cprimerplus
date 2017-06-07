@@ -1,6 +1,3 @@
-// inout.c
-// reorganize the input
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,7 +17,7 @@ int main(void)
 
 	n_columns = read_column_numbers( columns, MAX_COLS );
 
-	while( fgets(input,MAX_INPUT,stdin) != NULL )
+	while ( fgets( input, MAX_INPUT, stdin ) != NULL && input[0] != '\n')
 	{
 		printf("Original input : %s\n", input);
 		rearrange( output, input, n_columns, columns );
@@ -35,7 +32,7 @@ int read_column_numbers( int columns[], int max)
 	int num = 0;
 	int ch;
 
-	while( num < max && scanf( "%d", &columns[num] ) ==1
+	while( num < max && scanf("%d", &columns[num])==1
 		       	&& columns[num]>=0 )
 		num += 1;
 
@@ -45,13 +42,12 @@ int read_column_numbers( int columns[], int max)
 		exit( EXIT_FAILURE );
 	}
 
-	while( ( ch = getchar() != EOF && ch != '\n'))
+	while( ( ch = getchar()) != EOF && ch != '\n')
 			;
 	return num;
 }
 
-void rearrange( char *output, char const *input,
-	int n_columns, int const columns[])
+void rearrange( char *output, char const *input,int n_columns, int const columns[])
 {
 	int	col;
 	int 	output_col;
@@ -68,11 +64,10 @@ void rearrange( char *output, char const *input,
 				output_col == MAX_INPUT - 1)
 			break;
 		if ( output_col + nchars > MAX_INPUT -1 )
-			nchars = MAX_INPUT -output_col -1;
+			nchars = MAX_INPUT - output_col -1;
 
 		strncpy( output + output_col, input + columns[col],nchars);
 		output_col += nchars;
 	}
 		output[output_col] = '\0';	
 }
-
