@@ -11,6 +11,7 @@ int main()
 
 
 	source=fopen("randata","wr");
+	pic=fopen("picture","w");
 	//srand(11);
 	srand(time(0));
 	for(row=0;row<20;row++)
@@ -23,6 +24,25 @@ int main()
 		fprintf(source,"\n");
 	}
 
+	rewind(source);
+	for(row=0;row<20;row++)
+	{
+		for(col=0;col<31;col++)
+		{
+			if(col!=30)
+			{
+				fscanf(source,"%d",data[row][col]);
+				ch[row][col]=(char)(data[row][col]+31);
+			}
+			else
+				ch[row][col]='\0';
+			fprintf(pic,"%c ",ch[row][col]);
+
+		}
+		fprintf(pic,"\n");
+	}
+
+	fclose(pic);
 	fclose(source);
 	
 	return 0;
