@@ -16,7 +16,7 @@ int main()
 		int total;
 		int n;
 	};
-	struct rank{
+	/*struct rank{
 		struct student *stu;
 		int number;
 		int maxsize;
@@ -24,9 +24,11 @@ int main()
 
 	struct rank *pt;
 	pt=malloc(sizeof(struct rank));
-	int count;
-	pt->maxsize=3;
-	pt->stu=malloc(pt->maxsize*sizeof(struct student));
+	*/
+	int count,Maxsize;
+	Maxsize=3;
+	struct student *pt
+	pt=Maxsize*malloc(sizeof(struct student));
 
 	
 	printf("please input the student name:\n");	
