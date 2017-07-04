@@ -11,11 +11,7 @@ int main()
 {
 	struct student{
 		char name[LEN];
-		int liter;
-		int math;
-		int english;
-		int total;
-		int rank;
+		int liter,math,english,total,rank;
 	};
 	/*struct rank{
 		struct student *stu;
@@ -92,16 +88,18 @@ int main()
 						*(pt+j)=*(pt+j+1);
 						*(pt+j+1)=*temp;
 						flag=1;
-						(pt+j)->rank=j+1;
-						if(((pt+j)->total) == ((pt+j+1)->total))
-							(pt+j+1)->rank = (pt+j)->rank;
-						else
-							(pt+j+1)->rank=j+2;
-
 					}
-					if(flag==0)
-						break;
+					}
+					//if(flag==0)
+					//	break;
 				}
+				(pt)->rank=1;
+				for(j=1;j<Maxsize;j++)
+				{
+					if(((pt+j)->total) == ((pt+j-1)->total))
+						(pt+j)->rank = (pt+j-1)->rank;
+					else
+						(pt+j)->rank=j+1;
 				}
 
 
@@ -111,7 +109,7 @@ int main()
 
 
 	for(i=0;i<Maxsize;i++)
-		printf("rank: %4d; name: %4s; liter: %3d; math: %3d; english: %3d; total: %3d\n",(pt+i)->rank,(pt+i)->name,(pt+i)->liter,(pt+i)->math,(pt+i)->english,(pt+i)->total);
+		printf("rank: %4d; name: %10s; liter: %3d; math: %3d; english: %3d; total: %3d\n",(pt+i)->rank,(pt+i)->name,(pt+i)->liter,(pt+i)->math,(pt+i)->english,(pt+i)->total);
 
 
 	free(pt);
