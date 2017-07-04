@@ -15,7 +15,7 @@ int main()
 		int math;
 		int english;
 		int total;
-		int n;
+		int rank;
 	};
 	/*struct rank{
 		struct student *stu;
@@ -28,16 +28,20 @@ int main()
 	*/
 
 
-	int i,count,Maxsize;
-	char option;
+	int i,j,flag,Maxsize;
+	char option,source[LEN];
 
-	Maxsize=3;
+	Maxsize=8;
 	struct student *pt,*temp;
 	pt=malloc(Maxsize*sizeof(struct student));
 	temp=malloc(sizeof(struct student));
 
 	
-	//while(s_get((pt->stu[0]).name,LEN) != NULL)
+	//while(s_get((pt->stu[0]).name,LEN) != NULL) double pt
+	
+
+	//input
+	/*
 	for(i=0;i<Maxsize;i++)
 	{
 		printf("please input the student name:\n");	
@@ -52,7 +56,21 @@ int main()
 		while(getchar()!='\n')
 			continue;
 	}
+	*/
+	
+	FILE *in;
+	in = fopen ("score","r");
+	for(i=0;i<Maxsize;i++)
+	{
+		fscanf(in,"%s %d %d %d\n",(pt+i)->name,&((pt+i)->liter),&((pt+i)->math),&((pt+i)->english));
+		(pt+i)->total=(pt+i)->liter + (pt+i)->math + (pt+i)->english;
+		//printf("name: %4s; liter: %3d; math: %3d; english: %3d; total: %3d\n",(pt+i)->name,(pt+i)->liter,(pt+i)->math,(pt+i)->english,(pt+i)->total);
+		//while(getchar()!='\n')
+		//	continue;
+	}
+	fclose(in);
 
+	//sort 
 	printf("please choose the key to sort\n:");
 	//while((option=getchar())!='*')
 	scanf("%c",&option);
@@ -65,12 +83,25 @@ int main()
 			case 't':
 				{
 				for(i=0;i<Maxsize-1;i++)
-					if((pt+i)->total > (pt+i+1)->total)
+				{
+					flag=0;
+					for(j=0;j<Maxsize-1-i;j++)
+					if((pt+j)->total <= (pt+j+1)->total)
 					{
-						*temp=*(pt+i);
-						*(pt+i)=*(pt+i+1);
-						*(pt+i+1)=*temp;
+						*temp=*(pt+j);
+						*(pt+j)=*(pt+j+1);
+						*(pt+j+1)=*temp;
+						flag=1;
+						(pt+j)->rank=j+1;
+						if(((pt+j)->total) == ((pt+j+1)->total))
+							(pt+j+1)->rank = (pt+j)->rank;
+						else
+							(pt+j+1)->rank=j+2;
+
 					}
+					if(flag==0)
+						break;
+				}
 				}
 
 
@@ -80,7 +111,7 @@ int main()
 
 
 	for(i=0;i<Maxsize;i++)
-		printf("name: %4s; liter: %3d; math: %3d; english: %3d; total: %3d\n",(pt+i)->name,(pt+i)->liter,(pt+i)->math,(pt+i)->english,(pt+i)->total);
+		printf("rank: %4d; name: %4s; liter: %3d; math: %3d; english: %3d; total: %3d\n",(pt+i)->rank,(pt+i)->name,(pt+i)->liter,(pt+i)->math,(pt+i)->english,(pt+i)->total);
 
 
 	free(pt);
