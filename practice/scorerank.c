@@ -5,68 +5,102 @@
 
 #define LEN 40
 
+#define STRST struct student
+#define STRTS struct totalstudent
+
+
 char *s_get(char *st, int n);
 
-int main()
+struct student{
+	char name[LEN];
+	int liter,math,english,total,rank;
+};
+
+struct totalstudent{
+	struct student *st;
+	int size;
+	int Maxsize;
+};
+
+void Init(STRTS *pt,int ms)
 {
-	struct student{
-		char name[LEN];
-		int liter,math,english,total,rank;
-	};
-	/*struct rank{
-		struct student *stu;
-		int number;
-		int maxsize;
-	};
-
-	struct rank *pt;
-	pt=malloc(sizeof(struct rank));
-	*/
-
-
-	int i,j,flag,Maxsize;
-	char option,source[LEN];
-
-	Maxsize=8;
-	struct student *pt,*temp;
-	pt=malloc(Maxsize*sizeof(struct student));
-	temp=malloc(sizeof(struct student));
-
-	
-	//while(s_get((pt->stu[0]).name,LEN) != NULL) double pt
-	
-
-	//input
-	/*
-	for(i=0;i<Maxsize;i++)
+	if(ms<0)
 	{
-		printf("please input the student name:\n");	
-		s_get((pt+i)->name,LEN);   // pt[0].name (pt+1)->name
-					//	printf("%s\n",pt[0].name);
-		
-			printf("please input the score:\n");	
-			scanf("%d %d %d",&((pt+i)->liter),&((pt+i)->math),&((pt+i)->english));
-			(pt+i)->total=(pt+i)->liter + (pt+i)->math + (pt+i)->english;
-	
-		printf("name: %4s; liter: %3d; math: %3d; english: %3d; total: %3d\n",(pt+i)->name,(pt+i)->liter,(pt+i)->math,(pt+i)->english,(pt+i)->total);
+		printf("illegal value of Maxsize!\n");
+		exit(1);
+	}
+	pt->Maxsize=ms;
+	pt->st=malloc(ms*sizeof(STRST));		//Waste space;
+	pt->size=0;
+}
+
+void Clear(STRTS *pt)
+{
+	if(pt->st != NULL)
+		free(pt->st);
+	pt->size=0;
+	pt->Maxsize=0;
+}
+
+void againMalloc(STRTS *pt,int size)
+{
+	STRST *ptemp=realloc(pt->st,2*size*sizeof(struct student));
+	if(!ptemp)
+	{
+		printf("no more space to use!\n");
+		exit(1);	
+	}
+	pt->st=ptemp;
+	pt->Maxsize=2*pt->Maxsize;
+}
+
+void scrinput(STRTS *pt)   //screen input
+{
+	int count=0;
+
+	printf("please input the student name:\n");	
+	while(s_get((pt->st[count]).name,LEN)!= NULL)
+	{
+		printf("please input the score:\n");	
+		scanf("%d %d %d",&((pt->st[count]).liter),&((pt->st[count]).math),&((pt->st[count]).english));
+		(pt->st[count]).total=(pt->st[count]).liter +(pt->st[count]).math+(pt->st[count]).english;
+		count+=1;
+		if(count==pt->Maxsize)
+			againMalloc(pt,count);
+			
+		printf("name: %4s; liter: %3d; math: %3d; english: %3d; total: %3d\n",(pt->st[count]).name,(pt->st[count]).liter,(pt->st[count]).math,(pt->st[count]).english,(pt->st[count]).total);
 		while(getchar()!='\n')
 			continue;
 	}
-	*/
-	
+	pt->size=count;
+}
+
+void fileinput(STRTS *pt)
+{
 	FILE *in;
+	int count=0;
 	in = fopen ("score","r");
-	for(i=0;i<Maxsize;i++)
+	while((fscanf(in,"%s %d %d %d\n",(pt->st[count]).name,&((pt->st[count]).liter),&((pt->st[count]).math),&((pt->st[count]).english)))!=EOF)
 	{
-		fscanf(in,"%s %d %d %d\n",(pt+i)->name,&((pt+i)->liter),&((pt+i)->math),&((pt+i)->english));
-		(pt+i)->total=(pt+i)->liter + (pt+i)->math + (pt+i)->english;
+		(pt->st[count]).total=(pt->st[count]).liter +(pt->st[count]).math+(pt->st[count]).english;
+		count+=1;
+		if(count==pt->Maxsize)
+			againMalloc(pt,count);
+		//printf("name: %4s; liter: %3d; math: %3d; english: %3d; total: %3d\n",(pt->st[count]).name,(pt->st[count]).liter,(pt->st[count]).math,(pt->st[count]).english,(pt->st[count]).total);
 		//printf("name: %4s; liter: %3d; math: %3d; english: %3d; total: %3d\n",(pt+i)->name,(pt+i)->liter,(pt+i)->math,(pt+i)->english,(pt+i)->total);
 		//while(getchar()!='\n')
 		//	continue;
 	}
 	fclose(in);
+	pt->size=count;
+}
 
-	//sort 
+void sort(STRTS *pt)
+{
+	char option;
+	int count,i,j,flag;
+	STRST *temp;
+	temp=malloc(sizeof(STRTS));
 	printf("please choose the key to sort\n:");
 	//while((option=getchar())!='*')
 	scanf("%c",&option);
@@ -78,44 +112,50 @@ int main()
 			{
 			case 't':
 				{
-				for(i=0;i<Maxsize-1;i++)
+				for(i=0;i<pt->Maxsize-1;i++)
 				{
 					flag=0;
-					for(j=0;j<Maxsize-1-i;j++)
-					if((pt+j)->total <= (pt+j+1)->total)
+					for(j=0;j<pt->Maxsize-1-i;j++)
+					if((pt->st[j]).total <= (pt->st[j+1]).total)
 					{
-						*temp=*(pt+j);
-						*(pt+j)=*(pt+j+1);
-						*(pt+j+1)=*temp;
+						*temp=(pt->st[j]);
+						(pt->st[j])=(pt->st[j+1]);
+						(pt->st[j+1])=*temp;
 						flag=1;
 					}
 					}
 					//if(flag==0)
 					//	break;
 				}
-				(pt)->rank=1;
-				for(j=1;j<Maxsize;j++)
+				(pt->st[0]).rank=1;
+				for(j=1;j<pt->Maxsize;j++)
 				{
-					if(((pt+j)->total) == ((pt+j-1)->total))
-						(pt+j)->rank = (pt+j-1)->rank;
+					if(((pt->st[j]).total) == ((pt->st[j-1]).total))
+						(pt->st[j]).rank = (pt->st[j-1]).rank;
 					else
-						(pt+j)->rank=j+1;
+						(pt->st[j]).rank=j+1;
 				}
-
-
 			}
-
 	}
-
-
-	for(i=0;i<Maxsize;i++)
-		printf("rank: %4d; name: %10s; liter: %3d; math: %3d; english: %3d; total: %3d\n",(pt+i)->rank,(pt+i)->name,(pt+i)->liter,(pt+i)->math,(pt+i)->english,(pt+i)->total);
-
-
-	free(pt);
+	for(i=0;i<pt->size;i++)
+		printf("rank: %4d; name: %15s; liter: %3d; math: %3d; english: %3d; total: %3d\n",(pt->st[i]).rank,(pt->st[i]).name,(pt->st[i]).liter,(pt->st[i]).math,(pt->st[i]).english,(pt->st[i]).total);
+	temp = NULL;  //it will be wrong if i don't write this?
 	free(temp);
+}
+
+
+int main()
+{
+	struct totalstudent *pt;
+	pt= malloc(sizeof(STRTS));
+	Init(pt,2);
+	fileinput(pt);
+	sort(pt);
+//	Clear(pt);
+	free(pt);
 	return 0;
 }
+
 
 char *s_get(char *st, int n)
 {
