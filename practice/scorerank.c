@@ -22,6 +22,12 @@ struct totalstudent{
 	int Maxsize;
 };
 
+void eatline()
+{
+	while(getchar()!='\n')
+		continue;
+}
+
 void Init(STRTS *pt,int ms)
 {
 	if(ms<0)
@@ -99,14 +105,22 @@ void sort(STRTS *pt)
 {
 	char option;
 	int count,i,j,flag;
-	STRST *temp;
-	temp=malloc(sizeof(STRTS));
-	printf("please choose the key to sort\n:");
-	//while((option=getchar())!='*')
-	scanf("%c",&option);
+	STRST temp;
+	printf("please choose the key to sort:(both uppercase and lowercase is OK)\n");
+	puts("t)total	 	l)liter");
+	puts("m)math		e)english");
+	//scanf("%c",&option);
+	option=getchar();
+	eatline();
+	while(strchr("tlme",option)==NULL)
 	{
-		//if( option=='\n')
-		//	continue;
+		puts("please enter t l m e");
+		option = getchar();
+		eatline();
+		//scanf("%c",&option);
+	}
+	
+	{
 		if(islower(option))
 			switch(option)
 			{
@@ -116,43 +130,99 @@ void sort(STRTS *pt)
 				{
 					flag=0;
 					for(j=0;j<pt->Maxsize-1-i;j++)
-					if((pt->st[j]).total <= (pt->st[j+1]).total)
+					if((pt->st[j]).total < (pt->st[j+1]).total)
 					{
-						*temp=(pt->st[j]);
+						temp=(pt->st[j]);
 						(pt->st[j])=(pt->st[j+1]);
-						(pt->st[j+1])=*temp;
+						(pt->st[j+1])=temp;
 						flag=1;
 					}
-					}
-					//if(flag==0)
-					//	break;
 				}
-				(pt->st[0]).rank=1;
-				for(j=1;j<pt->Maxsize;j++)
+					if(flag==0)
+						break;
+				}
+			case 'l':
 				{
-					if(((pt->st[j]).total) == ((pt->st[j-1]).total))
-						(pt->st[j]).rank = (pt->st[j-1]).rank;
-					else
-						(pt->st[j]).rank=j+1;
+				for(i=0;i<pt->Maxsize-1;i++)
+				{
+					flag=0;
+					for(j=0;j<pt->Maxsize-1-i;j++)
+					if((pt->st[j]).liter < (pt->st[j+1]).liter)
+					{
+						temp=(pt->st[j]);
+						(pt->st[j])=(pt->st[j+1]);
+						(pt->st[j+1])=temp;
+						flag=1;
+					}
+				}
+					if(flag==0)
+						break;
+				}
+			case 'm':
+				{
+				for(i=0;i<pt->Maxsize-1;i++)
+				{
+					flag=0;
+					for(j=0;j<pt->Maxsize-1-i;j++)
+					if((pt->st[j]).math < (pt->st[j+1]).math)
+					{
+						temp=(pt->st[j]);
+						(pt->st[j])=(pt->st[j+1]);
+						(pt->st[j+1])=temp;
+						flag=1;
+					}
+				}
+					if(flag==0)
+						break;
+				}
+			case 'e':
+				{
+				for(i=0;i<pt->Maxsize-1;i++)
+				{
+					flag=0;
+					for(j=0;j<pt->Maxsize-1-i;j++)
+					if((pt->st[j]).english < (pt->st[j+1]).english)
+					{
+						temp=(pt->st[j]);
+						(pt->st[j])=(pt->st[j+1]);
+						(pt->st[j+1])=temp;
+						flag=1;
+					}
+				}
+					if(flag==0)
+						break;
 				}
 			}
+	while(getchar()!='\n')
+		continue;
 	}
+}
+
+void rank(STRTS *pt)
+{
+	int i,j;
+
+		(pt->st[0]).rank=1;
+		for(j=1;j<pt->Maxsize;j++)
+		{
+			if(((pt->st[j]).total) == ((pt->st[j-1]).total))
+				(pt->st[j]).rank = (pt->st[j-1]).rank;
+			else
+				(pt->st[j]).rank=j+1;
+		}
 	for(i=0;i<pt->size;i++)
 		printf("rank: %4d; name: %15s; liter: %3d; math: %3d; english: %3d; total: %3d\n",(pt->st[i]).rank,(pt->st[i]).name,(pt->st[i]).liter,(pt->st[i]).math,(pt->st[i]).english,(pt->st[i]).total);
-	temp = NULL;  //it will be wrong if i don't write this?
-	free(temp);
 }
 
 
 int main()
 {
-	struct totalstudent *pt;
-	pt= malloc(sizeof(STRTS));
-	Init(pt,2);
-	fileinput(pt);
-	sort(pt);
-//	Clear(pt);
-	free(pt);
+	struct totalstudent pt;
+	Init(&pt,2);
+	fileinput(&pt);
+	sort(&pt);
+	rank(&pt);
+	Clear(&pt);
 	return 0;
 }
 
