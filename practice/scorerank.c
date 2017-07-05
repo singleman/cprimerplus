@@ -109,93 +109,88 @@ void sort(STRTS *pt)
 	printf("please choose the key to sort:(both uppercase and lowercase is OK)\n");
 	puts("t)total	 	l)liter");
 	puts("m)math		e)english");
-	//scanf("%c",&option);
-	option=getchar();
+	scanf("%c",&option);
+	//option=getchar();
 	eatline();
 	while(strchr("tlme",option)==NULL)
 	{
 		puts("please enter t l m e");
-		option = getchar();
+		scanf("%c",&option);
+		//option = getchar();
 		eatline();
-		//scanf("%c",&option);
 	}
-	
-	{
-		if(islower(option))
-			switch(option)
+	if(islower(option))
+		switch(option)
+		{
+		case 't':
 			{
-			case 't':
+			for(i=0;i<pt->Maxsize-1;i++)
+			{
+				flag=0;
+				for(j=0;j<pt->Maxsize-1-i;j++)
+				if((pt->st[j]).total < (pt->st[j+1]).total)
 				{
-				for(i=0;i<pt->Maxsize-1;i++)
-				{
-					flag=0;
-					for(j=0;j<pt->Maxsize-1-i;j++)
-					if((pt->st[j]).total < (pt->st[j+1]).total)
-					{
-						temp=(pt->st[j]);
-						(pt->st[j])=(pt->st[j+1]);
-						(pt->st[j+1])=temp;
-						flag=1;
-					}
-				}
-					if(flag==0)
-						break;
-				}
-			case 'l':
-				{
-				for(i=0;i<pt->Maxsize-1;i++)
-				{
-					flag=0;
-					for(j=0;j<pt->Maxsize-1-i;j++)
-					if((pt->st[j]).liter < (pt->st[j+1]).liter)
-					{
-						temp=(pt->st[j]);
-						(pt->st[j])=(pt->st[j+1]);
-						(pt->st[j+1])=temp;
-						flag=1;
-					}
-				}
-					if(flag==0)
-						break;
-				}
-			case 'm':
-				{
-				for(i=0;i<pt->Maxsize-1;i++)
-				{
-					flag=0;
-					for(j=0;j<pt->Maxsize-1-i;j++)
-					if((pt->st[j]).math < (pt->st[j+1]).math)
-					{
-						temp=(pt->st[j]);
-						(pt->st[j])=(pt->st[j+1]);
-						(pt->st[j+1])=temp;
-						flag=1;
-					}
-				}
-					if(flag==0)
-						break;
-				}
-			case 'e':
-				{
-				for(i=0;i<pt->Maxsize-1;i++)
-				{
-					flag=0;
-					for(j=0;j<pt->Maxsize-1-i;j++)
-					if((pt->st[j]).english < (pt->st[j+1]).english)
-					{
-						temp=(pt->st[j]);
-						(pt->st[j])=(pt->st[j+1]);
-						(pt->st[j+1])=temp;
-						flag=1;
-					}
-				}
-					if(flag==0)
-						break;
+					temp=(pt->st[j]);
+					(pt->st[j])=(pt->st[j+1]);
+					(pt->st[j+1])=temp;
+					flag=1;
 				}
 			}
-	while(getchar()!='\n')
-		continue;
-	}
+			if(flag==0)
+				break;
+			}
+		case 'l':
+			{
+			for(i=0;i<pt->Maxsize-1;i++)
+			{
+				flag=0;
+				for(j=0;j<pt->Maxsize-1-i;j++)
+				if((pt->st[j]).liter < (pt->st[j+1]).liter)
+				{
+					temp=(pt->st[j]);
+					(pt->st[j])=(pt->st[j+1]);
+					(pt->st[j+1])=temp;
+					flag=1;
+				}
+			}
+			if(flag==0)
+				break;
+			}
+		case 'm':
+			{
+			for(i=0;i<pt->Maxsize-1;i++)
+			{
+				flag=0;
+				for(j=0;j<pt->Maxsize-1-i;j++)
+				if((pt->st[j]).math < (pt->st[j+1]).math)
+				{
+					temp=(pt->st[j]);
+					(pt->st[j])=(pt->st[j+1]);
+					(pt->st[j+1])=temp;
+					flag=1;
+				}
+			}
+			if(flag==0)
+				break;
+			}
+		case 'e':
+			{
+			for(i=0;i<pt->Maxsize-1;i++)
+			{
+				flag=0;
+				for(j=0;j<pt->Maxsize-1-i;j++)
+				if((pt->st[j]).english < (pt->st[j+1]).english)
+				{
+					temp=(pt->st[j]);
+					(pt->st[j])=(pt->st[j+1]);
+					(pt->st[j+1])=temp;
+					flag=1;
+				}
+			}
+			if(flag==0)
+				break;
+			}
+		}
 }
 
 void rank(STRTS *pt)
