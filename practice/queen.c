@@ -1,6 +1,6 @@
 #include<stdio.h>
 
-#define LEN 8
+#define LEN 10
 
 void pri_position(int (*pos)[2]);
 int cal(int row, int col, int (*pos)[2]);
@@ -42,7 +42,7 @@ int cal(int row,int col,int (*pos)[2])
 {
 	int j,critical;
 
-	for(j=col;j<LEN;j++)  //row 0-7
+	for(j=col;j<LEN;j++)  //row 0-7 don't break;
 	{
 		critical=1;
 		/*if(row==0)
@@ -76,10 +76,12 @@ int cal(int row,int col,int (*pos)[2])
 			}
 			cal(row+1,0, pos);
 		}
+	}
+	/*
 		else
 			continue;
 	}
-	/*if(pos[row-1][1]+1<LEN)
+	  if(pos[row-1][1]+1<LEN)
 		cal(row-1,pos[row-1][1]+1,pos);
 	else
 		cal(row-2,pos[row-2][1]+1,pos);
