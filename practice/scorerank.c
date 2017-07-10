@@ -197,14 +197,14 @@ void rank(STRTS *pt)
 {
 	int i,j;
 
-		(pt->st[0]).rank=1;
-		for(j=1;j<pt->Maxsize;j++)
-		{
-			if(((pt->st[j]).total) == ((pt->st[j-1]).total))
-				(pt->st[j]).rank = (pt->st[j-1]).rank;
-			else
-				(pt->st[j]).rank=j+1;
-		}
+	(pt->st[0]).rank=1;
+	for(j=1;j<pt->size;j++)
+	{
+		if(((pt->st[j]).total) == ((pt->st[j-1]).total))
+			(pt->st[j]).rank = (pt->st[j-1]).rank;
+		else
+			(pt->st[j]).rank=j+1;
+	}
 	for(i=0;i<pt->size;i++)
 		printf("rank: %4d; name: %15s; liter: %3d; math: %3d; english: %3d; total: %3d\n",(pt->st[i]).rank,(pt->st[i]).name,(pt->st[i]).liter,(pt->st[i]).math,(pt->st[i]).english,(pt->st[i]).total);
 }
