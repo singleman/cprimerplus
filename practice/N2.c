@@ -10,7 +10,7 @@ int main()
 
     //scanf("%d",&N);
     
-    for(N=1;N<7;N++)
+    for(N=1;N<15;N++)
     {
 	content=1;
    	for(k=N-1;k>=1-N;k--)
@@ -43,7 +43,7 @@ int main()
                   				matrix[i][j]=content++;
                				break;
            		}
-                 }
+                }
    	 }
 	printf("N=%d,the matrix is:\n",N);
     	for(i=0;i<N;i++)
