@@ -5,14 +5,13 @@ int main()
     int i,j,k,N,key,content;
     int matrix[LEN][LEN];
 
-    key=0;
-    content=1;
-
     //scanf("%d",&N);
+    //key=0;  
     
     for(N=1;N<15;N++)
     {
 	content=1;
+    	key=0;
    	for(k=N-1;k>=1-N;k--)
    	{
        		key++;
