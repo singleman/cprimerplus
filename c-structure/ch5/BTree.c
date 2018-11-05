@@ -133,3 +133,48 @@ int BTreeDepth(BTnode *BT)
 			return dep2+1;
 	}
 }
+
+ElemType *FindBTree(BTnode *BT,ElemType x)
+{
+	if(BT==NULL)
+		return NULL;
+	else {
+		if(BT->data==x)
+			return &(BT->data);
+		else {
+			ElemType *p;
+			if(p=FindBTree(BT->left,x))
+				return p;
+			if(p=FindBTree(BT->right,x))
+				return p;
+			return NULL
+		}
+	}
+}
+
+void PrintBTree(BTnode *BT)
+{
+	if(BT!=NULL){
+		printf("%c",BT->data);
+		if(BT->left != NULL || BT->right != NULL)
+		{
+			print("(");
+			PrintBTree(BT->left);
+			if(BT->right!=NULL)
+				printf(",");
+			PrintBTree(BT->right);
+			printf(")");
+		}
+	}
+}
+
+void ClearBTree(BTnode **BT)
+{
+	if(*BT!=NULL){
+		ClearBTree(&((*BT)->left));
+		ClearBTree(&((*BT)->right));
+		free(*BT);
+		*BT=NULL;
+	}
+}
+
