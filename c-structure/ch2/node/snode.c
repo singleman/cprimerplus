@@ -417,3 +417,12 @@ void MergeList(struct sNode **HL,struct sNode **SL)
 	*HL=head;
 	*SL=head;
 }
+
+void printListFromTailToHead(struct sNode *HL)
+{
+	if(HL!=NULL){
+		if(HL->next!=NULL)
+			printListFromTailToHead(HL->next);
+		printf("%5d",HL->data);
+	}
+}
