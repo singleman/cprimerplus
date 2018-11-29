@@ -119,20 +119,20 @@ void InsertFirstList(struct sNode **HL, ElemType x)
 
 void InsertLastList(struct sNode **HL, ElemType x)
 {
-	struct sNode *newp,*p;
+	struct sNode *newp;
 	newp = malloc(sizeof(struct sNode));
 	if(newp == NULL)
 	{
 		printf("out of memory,quit!\n");
 		exit(1);
 	}
-	newp->data == x;
-	newp->next == NULL;
-	if(*HL = NULL)
+	newp->data = x;
+	newp->next = NULL;
+	if(*HL == NULL)
 		*HL = newp;
 	else
 	{
-		p=*HL;
+		struct sNode *p=*HL;
 		while(p->next != NULL)
 			p = p->next;
 		p->next = newp;

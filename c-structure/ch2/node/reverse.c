@@ -24,7 +24,7 @@ int main()
 		printf("%5d",a[i]);
 	printf("\n");
 	for(i=0;i<NN;i++)
-		InsertFirstList(&p,a[i]);
+		InsertLastList(&p,a[i]);
 	printListFromTailToHead(p);
 	printf("\n");
 	TraverseList(p);
