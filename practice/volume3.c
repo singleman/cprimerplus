@@ -16,6 +16,7 @@ struct integration{
         double Ymin,Ymax;
         double Zmin,Zmax;//扇形界限，区分6种情况
         double VolBase,VolCol;
+        int sign;
 };
 
 void InitPara(struct data *pst)
@@ -53,7 +54,7 @@ void ProcessPara(struct data *pst,struct integration *i)
 {
     double disH,disL;               //上圆柱下沉的位置，和扇形上下限的距离
     double HighCol,HighBase;        //圆柱体的高
-    HighCol=Pytha(pst->BaseRadius,pst->BaseRadius-pst->BaseHeight); //定值？
+    HighCol=2*Pytha(pst->BaseRadius,pst->BaseRadius-pst->BaseHeight); //定值？
 
     if(pst->Center>=pst->SectorMax){    //情况1：圆心高于扇形(注意0有没有影响) 
         disH=pst->Center-pst->SectorMax;
@@ -69,6 +70,7 @@ void ProcessPara(struct data *pst,struct integration *i)
             i->VolCol=M_PI*pow(pst->ColumnRadius,2)*HighCol;	//体积 
             HighBase=2*i->Zmax;
             i->VolBase=SectorArea(pst->BaseRadius,i->Ymin)*HighBase;
+            i->sign=1;
         }
         else{										//1B圆柱沉入底座 
 			i->Ymin=pst->SectorMin;
@@ -80,6 +82,7 @@ void ProcessPara(struct data *pst,struct integration *i)
 			i->VolCol=(M_PI*pow(pst->ColumnRadius,2)-SectorArea(pst->ColumnRadius,disL))*HighCol;
 			HighBase=2*i->Zmax;
 			i->VolBase=SectorArea(pst->BaseRadius,i->Ymin)*HighBase;
+			i->sign=2;
 		} 
     }
     else if(pst->Center<=pst->SectorMin){	//情况2：圆心沉入底座
@@ -93,9 +96,10 @@ void ProcessPara(struct data *pst,struct integration *i)
 	            i->Zmax=Pytha(pst->ColumnRadius,disL);
 	            i->Xmin=0;
 	            i->Xmax=Pytha(pst->BaseRadius,i->Ymin);
-	            i->VolCol=SectorArea(pst->ColumnRadius,pst->SectorMin)*HighCol;	//体积 
+	            i->VolCol=SectorArea(pst->ColumnRadius,disL)*HighCol;	//体积 
 	            HighBase=2*i->Zmax;
 	            i->VolBase=(SectorArea(pst->BaseRadius,i->Ymin)-SectorArea(pst->BaseRadius,i->Ymax))*HighBase;
+	            i->sign=3;
 	        }
 	        else{										//2B圆柱高于扇形 
 				i->Ymin=pst->SectorMin;
@@ -107,6 +111,7 @@ void ProcessPara(struct data *pst,struct integration *i)
 				i->VolCol=SectorArea(pst->ColumnRadius,disL)*HighCol;
 				HighBase=2*i->Zmax;
 				i->VolBase=SectorArea(pst->BaseRadius,i->Ymin)*HighBase;
+				i->sign=4;
 			} 
 
     }
@@ -126,7 +131,8 @@ void ProcessPara(struct data *pst,struct integration *i)
 			i->Xmax=Pytha(pst->BaseRadius,i->Ymin);
 			i->VolCol=(M_PI*pow(pst->ColumnRadius,2)-SectorArea(pst->ColumnRadius,disL))*HighCol;
 			HighBase=2*i->Zmax;
-			i->VolBase==SectorArea(pst->BaseRadius,i->Ymin)*HighBase;
+			i->VolBase=SectorArea(pst->BaseRadius,i->Ymin)*HighBase;
+			i->sign=5;
 		} 
 		if((pst->CoMax<=pst->SectorMax)&&(pst->CoMin>=pst->SectorMin))	//3B:圆柱位于扇形区域
 		{
@@ -139,6 +145,7 @@ void ProcessPara(struct data *pst,struct integration *i)
 			i->VolCol=M_PI*pow(pst->ColumnRadius,2)*HighCol;
 			HighBase=2*i->Zmax;
 			i->VolBase=(SectorArea(pst->BaseRadius,i->Ymin)-SectorArea(pst->BaseRadius,i->Ymax))*HighBase;
+			i->sign=6;
 		} 
 		if((pst->CoMax<=pst->SectorMax)&&(pst->CoMin<pst->SectorMin))	//3C:圆柱覆盖下方两个区域
 		{
@@ -151,6 +158,7 @@ void ProcessPara(struct data *pst,struct integration *i)
 			i->VolCol=(M_PI*pow(pst->ColumnRadius,2)-SectorArea(pst->ColumnRadius,disL))*HighCol;
 			HighBase=2*i->Zmax;
 			i->VolBase=(SectorArea(pst->BaseRadius,i->Ymin)-SectorArea(pst->BaseRadius,i->Ymax))*HighBase;
+			i->sign=7;
 		}
 		if((pst->CoMax>pst->SectorMax)&&(pst->CoMin>=pst->SectorMin))	//3D:圆柱覆盖上方两个区域
 		{
@@ -163,6 +171,7 @@ void ProcessPara(struct data *pst,struct integration *i)
 			i->VolCol=M_PI*pow(pst->ColumnRadius,2)*HighCol;
 			HighBase=2*i->Zmax;
 			i->VolBase=SectorArea(pst->BaseRadius,i->Ymin)*HighBase;
+			i->sign=8;
 		}
     }
 
@@ -193,6 +202,7 @@ int main()
     struct integration M; 
     InitPara(&L);
     ProcessPara(&L,&M);
+    printf("M.sign=%d\n",M.sign);
     double x,y,z,step,result;
     result=0;
     //printf("please input the step of Microelement:");
