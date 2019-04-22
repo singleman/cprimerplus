@@ -188,7 +188,7 @@ int base(double x,double y,double radius)   //在下底座扇形内部
 }
 int column(double y,double z,struct data *pst) //在上底座圆柱外面
 {
-    if((y-pst->Center)*(y-pst->Center)+z*z>(pst->ColumnRadius)*(pst->ColumnRadius))
+    if((y-pst->Center)*(y-pst->Center)+z*z>=(pst->ColumnRadius)*(pst->ColumnRadius))
         return 1;
     else
         return 0;
@@ -197,18 +197,25 @@ int column(double y,double z,struct data *pst) //在上底座圆柱外面
 int main()
 {
 	time_t first,second;
+	FILE *fp,*lp; 
 		
     struct data L;
     struct integration M; 
+    
+    fp=fopen("data.txt","a");
+    lp=fopen("location.txt","w+");
     InitPara(&L);
     ProcessPara(&L,&M);
-    printf("M.sign=%d\n",M.sign);
+    
     double x,y,z,step,result;
-    result=0;
+    
     //printf("please input the step of Microelement:");
     //scanf("%lf",&step);
-    for(step=0.1;step>0.000001;step=step/10)
+    fprintf(fp,"The BaseRadius=%f\nThe BaseHeight=%f\nThe ColumnRadius=%f\nThe ColumnOut=%f\n",L.BaseRadius,L.BaseHeight,L.ColumnRadius,L.ColumnOut);
+    fprintf(fp,"M.sign=%d\n",M.sign);
+    for(step=0.1;step>0.00001;step=step/10)
 	{
+		result=0;
 		first=time(NULL);
 	    for(x=M.Xmin;x<M.Xmax;x=x+step)
 	    {
@@ -216,13 +223,18 @@ int main()
 	        {
 	             for(y=M.Ymin;y<M.Ymax;y=y+step)
 	                {
-	                    if(base(x,y,L.BaseRadius)&&column(y,z,&L))
-	                        result=result+pow(step,3);
+	                	if(base(x,y,L.BaseRadius)&&column(y,z,&L)){
+	                		result=result+pow(step,3);
+	                    //	fprintf(lp,"x=%f,y=%f,z=%f,result=%f\n",x,y,z,result);
+						}
 	                }
 	        }
 	    }
 	    second=time(NULL);
+    	fprintf(fp,"\tstep= %lf the volumn is %f,time is %d\n",step,M.VolCol-(M.VolBase-4*result),second-first);
     	printf("step= %lf the volumn is %f,time is %d\n",step,M.VolCol-(M.VolBase-4*result),second-first);
 	}
+	fclose(fp);
+	fclose(lp);
     return 0;
 }
