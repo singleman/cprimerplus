@@ -1,7 +1,6 @@
 #include<stdio.h>
 #include<math.h>
 #include<time.h>
-#define LENGTH 40
 
 struct data{
         double BaseRadius;
@@ -41,19 +40,17 @@ void InitPara(struct data *pst)
 
 void FilePara(struct data *pst,FILE **fp)////????
 {
-	//char file(LENGTH);
-	//printf("please input the file name of data:");
-	//scanf("%s",file);
-	
 	fscanf(*fp,"%lf",&pst->BaseRadius);
     fscanf(*fp,"%lf",&pst->BaseHeight);
     fscanf(*fp,"%lf",&pst->ColumnRadius);
     fscanf(*fp,"%lf",&pst->ColumnOut);
 	
-	printf("%lf\n",pst->BaseRadius);
-    printf("%lf\n",pst->BaseHeight);
-    printf("%lf\n",pst->ColumnRadius);
-    printf("%lf\n",pst->ColumnOut);	
+    pst->Center=pst->BaseRadius+pst->ColumnOut-pst->ColumnRadius; //上圆柱参数
+    pst->CoMin=pst->Center-pst->ColumnRadius;
+    pst->CoMax=pst->Center+pst->ColumnRadius;
+
+    pst->SectorMax=pst->BaseRadius;                             //扇形上下限
+    pst->SectorMin=pst->BaseRadius-pst->BaseHeight;
 	
 }
 double SectorArea(double radius,double distance)	//弧顶面积=扇形面积-三角形面积 
@@ -215,44 +212,54 @@ int column(double y,double z,struct data *pst) //在上底座圆柱外面
 int main()
 {
 	time_t first,second;
-	FILE *fp,*dp; 
+	double x,y,z,step,volume;
+	FILE *fp,*dp;
+	char c;
+	int row=0; 
+	int i;
 		
     struct data L;
-    struct integration M; 
+    struct integration M;  
     
-    fp=fopen("result.txt","a");
+    fp=fopen("result3.txt","a");
     dp=fopen("data.txt","r");
-    //InitPara(&L);
-    FilePara(&L,&dp); 
-    ProcessPara(&L,&M);
+    //InitPara(&L); //手动输入数据 
     
-    double x,y,z,step,volume;
-    
-    //printf("please input the step of Microelement:");
-    //scanf("%lf",&step);
-    fprintf(fp,"The BaseRadius=%f\nThe BaseHeight=%f\nThe ColumnRadius=%f\nThe ColumnOut=%f\n",L.BaseRadius,L.BaseHeight,L.ColumnRadius,L.ColumnOut);
-    fprintf(fp,"M.sign=%d\n",M.sign);
-    for(step=0.1;step>0.00001;step=step/10)
-	{
-		volume=0;
-		first=time(NULL);
-	    for(x=M.Xmin;x<M.Xmax;x=x+step)
-	    {
-	        for(z=M.Zmin;z<M.Zmax;z=z+step)
-	        {
-	             for(y=M.Ymin;y<M.Ymax;y=y+step)
-	                {
-	                	if(base(x,y,L.BaseRadius)&&column(y,z,&L)){
-	                		volume=volume+pow(step,3);
-	                    //	fprintf(lp,"x=%f,y=%f,z=%f,result=%f\n",x,y,z,result);
-						}
-	                }
-	        }
-	    }
-	    second=time(NULL);
-    	fprintf(fp,"\tstep= %lf the volume is %f,time is %d\n",step,M.VolCol-(M.VolBase-4*volume),second-first);
-    	printf("step= %lf the volumn is %f,time is %d\n",step,M.VolCol-(M.VolBase-4*volume),second-first);
+    while((c=fgetc(dp))!=EOF){
+    	if(c=='\n')
+    		row++;
+	} 
+	rewind(dp); 
+	for(i=0;i<row;i++){
+		FilePara(&L,&dp); 
+    	ProcessPara(&L,&M); 
+   	    //printf("please input the step of Microelement:");
+	    //scanf("%lf",&step);
+	    fprintf(fp,"The BaseRadius=%f\nThe BaseHeight=%f\nThe ColumnRadius=%f\nThe ColumnOut=%f\n",L.BaseRadius,L.BaseHeight,L.ColumnRadius,L.ColumnOut);
+	    fprintf(fp,"M.sign=%d\n",M.sign);
+	    for(step=0.1;step>0.001;step=step/10)
+		{
+			volume=0;
+			first=time(NULL);
+		    for(x=M.Xmin;x<M.Xmax;x=x+step)
+		    {
+		        for(z=M.Zmin;z<M.Zmax;z=z+step)
+		        {
+		             for(y=M.Ymin;y<M.Ymax;y=y+step)
+		                {
+		                	if(base(x,y,L.BaseRadius)&&column(y,z,&L)){
+		                		volume=volume+pow(step,3);
+		                    //	fprintf(lp,"x=%f,y=%f,z=%f,result=%f\n",x,y,z,result);
+							}
+		                }
+		        }
+		    }
+		    second=time(NULL);
+	    	fprintf(fp,"\tstep= %lf the volume is %f,time is %d\n",step,M.VolCol-(M.VolBase-4*volume),second-first);
+	    	printf("step= %lf the volumn is %f,time is %d\n",step,M.VolCol-(M.VolBase-4*volume),second-first);
+		}
 	}
+    
 	fclose(fp);
 	fclose(dp);
     return 0;
