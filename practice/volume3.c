@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<math.h>
 #include<time.h>
+#define LENGTH 40
 
 struct data{
         double BaseRadius;
@@ -38,6 +39,23 @@ void InitPara(struct data *pst)
     pst->SectorMin=pst->BaseRadius-pst->BaseHeight;
 }
 
+void FilePara(struct data *pst,FILE **fp)////????
+{
+	//char file(LENGTH);
+	//printf("please input the file name of data:");
+	//scanf("%s",file);
+	
+	fscanf(*fp,"%lf",&pst->BaseRadius);
+    fscanf(*fp,"%lf",&pst->BaseHeight);
+    fscanf(*fp,"%lf",&pst->ColumnRadius);
+    fscanf(*fp,"%lf",&pst->ColumnOut);
+	
+	printf("%lf\n",pst->BaseRadius);
+    printf("%lf\n",pst->BaseHeight);
+    printf("%lf\n",pst->ColumnRadius);
+    printf("%lf\n",pst->ColumnOut);	
+	
+}
 double SectorArea(double radius,double distance)	//弧顶面积=扇形面积-三角形面积 
 {
     double CircleArea;
@@ -197,17 +215,18 @@ int column(double y,double z,struct data *pst) //在上底座圆柱外面
 int main()
 {
 	time_t first,second;
-	FILE *fp,*lp; 
+	FILE *fp,*dp; 
 		
     struct data L;
     struct integration M; 
     
-    fp=fopen("data.txt","a");
-    lp=fopen("location.txt","w+");
-    InitPara(&L);
+    fp=fopen("result.txt","a");
+    dp=fopen("data.txt","r");
+    //InitPara(&L);
+    FilePara(&L,&dp); 
     ProcessPara(&L,&M);
     
-    double x,y,z,step,result;
+    double x,y,z,step,volume;
     
     //printf("please input the step of Microelement:");
     //scanf("%lf",&step);
@@ -215,7 +234,7 @@ int main()
     fprintf(fp,"M.sign=%d\n",M.sign);
     for(step=0.1;step>0.00001;step=step/10)
 	{
-		result=0;
+		volume=0;
 		first=time(NULL);
 	    for(x=M.Xmin;x<M.Xmax;x=x+step)
 	    {
@@ -224,17 +243,17 @@ int main()
 	             for(y=M.Ymin;y<M.Ymax;y=y+step)
 	                {
 	                	if(base(x,y,L.BaseRadius)&&column(y,z,&L)){
-	                		result=result+pow(step,3);
+	                		volume=volume+pow(step,3);
 	                    //	fprintf(lp,"x=%f,y=%f,z=%f,result=%f\n",x,y,z,result);
 						}
 	                }
 	        }
 	    }
 	    second=time(NULL);
-    	fprintf(fp,"\tstep= %lf the volumn is %f,time is %d\n",step,M.VolCol-(M.VolBase-4*result),second-first);
-    	printf("step= %lf the volumn is %f,time is %d\n",step,M.VolCol-(M.VolBase-4*result),second-first);
+    	fprintf(fp,"\tstep= %lf the volume is %f,time is %d\n",step,M.VolCol-(M.VolBase-4*volume),second-first);
+    	printf("step= %lf the volumn is %f,time is %d\n",step,M.VolCol-(M.VolBase-4*volume),second-first);
 	}
 	fclose(fp);
-	fclose(lp);
+	fclose(dp);
     return 0;
 }
