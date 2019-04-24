@@ -56,7 +56,7 @@ void FilePara(struct data *pst,FILE **fp)////????
 double SectorArea(double radius,double distance)	//弧顶面积=扇形面积-三角形面积 
 {
     double CircleArea;
-    CircleArea=acos(distance/radius)*pow(radius,2)-radius*distance;
+    CircleArea=acos(distance/radius)*pow(radius,2)-distance*sqrt(pow(radius,2)-pow(distance,2));
     return CircleArea;
 }
 
@@ -221,46 +221,73 @@ int main()
     struct data L;
     struct integration M;  
     
-    fp=fopen("result3.txt","a");
-    dp=fopen("data.txt","r");
-    //InitPara(&L); //手动输入数据 
-    
-    while((c=fgetc(dp))!=EOF){
-    	if(c=='\n')
-    		row++;
-	} 
-	rewind(dp); 
-	for(i=0;i<row;i++){
-		FilePara(&L,&dp); 
-    	ProcessPara(&L,&M); 
-   	    //printf("please input the step of Microelement:");
-	    //scanf("%lf",&step);
-	    fprintf(fp,"The BaseRadius=%f\nThe BaseHeight=%f\nThe ColumnRadius=%f\nThe ColumnOut=%f\n",L.BaseRadius,L.BaseHeight,L.ColumnRadius,L.ColumnOut);
-	    fprintf(fp,"M.sign=%d\n",M.sign);
-	    for(step=0.1;step>0.001;step=step/10)
+    printf("which way do you want to input the data:\n");
+    printf("\t1.Manual.\n");
+    printf("\t2.FIle:data.txt\n");
+    scanf("%d",&i);
+    if(i==1){
+		InitPara(&L); //手动输入数据
+		ProcessPara(&L,&M);
+		for(step=0.1;step>0.0001;step=step/10)
 		{
-			volume=0;
-			first=time(NULL);
-		    for(x=M.Xmin;x<M.Xmax;x=x+step)
-		    {
-		        for(z=M.Zmin;z<M.Zmax;z=z+step)
-		        {
-		             for(y=M.Ymin;y<M.Ymax;y=y+step)
-		                {
-		                	if(base(x,y,L.BaseRadius)&&column(y,z,&L)){
-		                		volume=volume+pow(step,3);
-		                    //	fprintf(lp,"x=%f,y=%f,z=%f,result=%f\n",x,y,z,result);
-							}
-		                }
-		        }
-		    }
-		    second=time(NULL);
-	    	fprintf(fp,"\tstep= %lf the volume is %f,time is %d\n",step,M.VolCol-(M.VolBase-4*volume),second-first);
-	    	printf("step= %lf the volumn is %f,time is %d\n",step,M.VolCol-(M.VolBase-4*volume),second-first);
+				volume=0;
+				first=time(NULL);
+			    for(x=M.Xmin;x<M.Xmax;x=x+step)
+			    {
+			        for(z=M.Zmin;z<M.Zmax;z=z+step)
+			        {
+			             for(y=M.Ymin;y<M.Ymax;y=y+step)
+			                {
+			                	if(base(x,y,L.BaseRadius)&&column(y,z,&L)){
+			                		volume=volume+pow(step,3);
+			                	}
+			                }
+			        }
+			    }
+			    second=time(NULL);
+		      	printf("step= %lf the volumn is %f,time is %d\n",step,M.VolCol-(M.VolBase-4*volume),second-first);
 		}
 	}
-    
-	fclose(fp);
-	fclose(dp);
+	else{
+	    fp=fopen("result3.txt","a");
+	    dp=fopen("data.txt","r");
+	     
+	    while((c=fgetc(dp))!=EOF){
+	    	if(c=='\n')
+	    		row++;
+		} 
+		rewind(dp); 
+		for(i=0;i<row;i++){
+			FilePara(&L,&dp); 
+	    	ProcessPara(&L,&M); 
+	
+		    fprintf(fp,"The BaseRadius=%f\nThe BaseHeight=%f\nThe ColumnRadius=%f\nThe ColumnOut=%f\n",L.BaseRadius,L.BaseHeight,L.ColumnRadius,L.ColumnOut);
+		    fprintf(fp,"M.sign=%d\n",M.sign);
+		    for(step=0.1;step>0.001;step=step/10)
+			{
+				volume=0;
+				first=time(NULL);
+			    for(x=M.Xmin;x<M.Xmax;x=x+step)
+			    {
+			        for(z=M.Zmin;z<M.Zmax;z=z+step)
+			        {
+			             for(y=M.Ymin;y<M.Ymax;y=y+step)
+			                {
+			                	if(base(x,y,L.BaseRadius)&&column(y,z,&L)){
+			                		volume=volume+pow(step,3);
+			                    //	fprintf(lp,"x=%f,y=%f,z=%f,result=%f\n",x,y,z,result);
+								}
+			                }
+			        }
+			    }
+			    second=time(NULL);
+		    	fprintf(fp,"\tstep= %lf the volume is %f,time is %d\n",step,M.VolCol-(M.VolBase-4*volume),second-first);
+		    	printf("step= %lf the volumn is %f,time is %d\n",step,M.VolCol-(M.VolBase-4*volume),second-first);
+			}
+		}
+	    
+		fclose(fp);
+		fclose(dp);
+	}
     return 0;
 }

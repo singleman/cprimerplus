@@ -82,6 +82,7 @@ int main()
 	for(i=0;i<row;i++){
 		FilePara(&L,&dp);
 		fprintf(fp,"The BaseRadius=%f\nThe BaseHeight=%f\nThe ColumnRadius=%f\nThe ColumnOut=%f\n",L.BaseRadius,L.BaseHeight,L.VolumnRadius,L.VolumnOut);
+		fprintf(fp,"M.sign=%d\n",i+1);
 	    for(step=0.1;step>0.001;step=step/10)
 		{
 			result=0;
