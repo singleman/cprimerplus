@@ -263,7 +263,7 @@ int main()
 	
 		    fprintf(fp,"The BaseRadius=%f\nThe BaseHeight=%f\nThe ColumnRadius=%f\nThe ColumnOut=%f\n",L.BaseRadius,L.BaseHeight,L.ColumnRadius,L.ColumnOut);
 		    fprintf(fp,"M.sign=%d\n",M.sign);
-		    for(step=0.1;step>0.001;step=step/10)
+		    for(step=0.1;step>0.0001;step=step/10)
 			{
 				volume=0;
 				first=time(NULL);
