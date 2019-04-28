@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<math.h>
 #include<time.h>
+#include<stdlib.h>
 
 struct data{
         double BaseRadius;
@@ -40,10 +41,22 @@ void InitPara(struct data *pst)
 
 void FilePara(struct data *pst,FILE **fp)////????
 {
-	fscanf(*fp,"%lf",&pst->BaseRadius);
-    fscanf(*fp,"%lf",&pst->BaseHeight);
-    fscanf(*fp,"%lf",&pst->ColumnRadius);
-    fscanf(*fp,"%lf",&pst->ColumnOut);
+	while(fscanf(*fp,"%lf",&pst->BaseRadius)!=1){
+		printf("illegal input,please check out data.txt!\n");
+		exit(1);
+	}
+    while(fscanf(*fp,"%lf",&pst->BaseHeight)!=1){
+		printf("illegal input,please check out data.txt!\n");
+		exit(1);
+	}
+    while(fscanf(*fp,"%lf",&pst->ColumnRadius)!=1){
+		printf("illegal input,please check out data.txt!\n");
+		exit(1);
+	}
+    while(fscanf(*fp,"%lf",&pst->ColumnOut)!=1){
+		printf("illegal input,please check out data.txt!\n");
+		exit(1);
+	}
 	
     pst->Center=pst->BaseRadius+pst->ColumnOut-pst->ColumnRadius; //上圆柱参数
     pst->CoMin=pst->Center-pst->ColumnRadius;
@@ -223,11 +236,13 @@ int main()
     
     printf("which way do you want to input the data:\n");
     printf("\t1.Manual.\n");
-    printf("\t2.FIle:data.txt\n");
+    printf("\t2.FIle:data.txt(BaseRadius BaseHeight ColumnRadius ColumnOut)\n");
     scanf("%d",&i);
+    fp=fopen("result3.txt","a");
     if(i==1){
 		InitPara(&L); //手动输入数据
 		ProcessPara(&L,&M);
+		fprintf(fp,"The BaseRadius=%f\nThe BaseHeight=%f\nThe ColumnRadius=%f\nThe ColumnOut=%f\n",L.BaseRadius,L.BaseHeight,L.ColumnRadius,L.ColumnOut);
 		for(step=0.1;step>0.0001;step=step/10)
 		{
 				volume=0;
@@ -246,10 +261,11 @@ int main()
 			    }
 			    second=time(NULL);
 		      	printf("step= %lf the volumn is %f,time is %d\n",step,M.VolCol-(M.VolBase-4*volume),second-first);
+		      	fprintf(fp,"\tstep= %lf the volume is %f,time is %d\n",step,M.VolCol-(M.VolBase-4*volume),second-first);
 		}
 	}
 	else{
-	    fp=fopen("result3.txt","a");
+	    
 	    dp=fopen("data.txt","r");
 	     
 	    while((c=fgetc(dp))!=EOF){
@@ -257,7 +273,7 @@ int main()
 	    		row++;
 		} 
 		rewind(dp); 
-		for(i=0;i<row;i++){
+		for(i=0;i<row+1;i++){
 			FilePara(&L,&dp); 
 	    	ProcessPara(&L,&M); 
 	
@@ -275,7 +291,6 @@ int main()
 			                {
 			                	if(base(x,y,L.BaseRadius)&&column(y,z,&L)){
 			                		volume=volume+pow(step,3);
-			                    //	fprintf(lp,"x=%f,y=%f,z=%f,result=%f\n",x,y,z,result);
 								}
 			                }
 			        }
@@ -287,7 +302,7 @@ int main()
 		}
 	    
 		fclose(fp);
-		fclose(dp);
 	}
+	fclose(dp);
     return 0;
 }
